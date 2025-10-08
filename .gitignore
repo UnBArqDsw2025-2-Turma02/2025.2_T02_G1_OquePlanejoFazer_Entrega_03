@@ -46,6 +46,3 @@ __pycache__/
 
 # Ignore Jupyter Notebooks checkpoints
 .ipynb_checkpoints/
-
-# Ignore docsify .nojekyll
-/docs/.nojekyll
