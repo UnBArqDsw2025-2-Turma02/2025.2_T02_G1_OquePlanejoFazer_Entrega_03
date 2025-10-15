@@ -76,13 +76,33 @@ Este repositório reúne toda a documentação do projeto referente a terceira e
 
 </center>
 
-## Tecnologia
 
-A geração do site estático é realizada utilizando o [docsify](https://docsify.js.org/).
+## Pré-requisitos
+
+Antes de começar, confira se você já tem instalado no seu computador:
+
+- [Node.js](https://nodejs.org/) (versão mínima recomendada: 20.19 ou 22.12)
+- [npm](https://www.npmjs.com/get-npm) ou [yarn](https://yarnpkg.com/)
+- [Git](https://git-scm.com/) (opcional, caso vá clonar o repositório)
+
+### Instalação do Backend (Node.js)
 
 ```shell
-"Docsify generates your documentation website on the fly. Unlike GitBook, it does not generate static html files. Instead, it smartly loads and parses your Markdown files and displays them as a website. To start using it, all you need to do is create an index.html and deploy it on GitHub Pages."
-``` 
+cd backend
+npm install
+cp .env.example .env
+npm start
+```
+
+### Instalação do Frontend (React)
+
+Abra um novo terminal
+
+```shell
+cd frontend
+npm install
+npm run dev
+```
 
 ### Instalando o docsify
 
