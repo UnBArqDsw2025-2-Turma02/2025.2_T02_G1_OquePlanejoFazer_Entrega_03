@@ -1,13 +1,12 @@
 import express from 'express';
 import cors from 'cors';
+import routes from './routes/index.js';
 
 const app = express();
+
 app.use(cors());
 app.use(express.json());
 
-// Rota inicial para testar
-app.get('/', (req, res) => {
-  res.json({ message: 'uhuuu backend rodando 🚀' });
-});
+app.use('/', routes);
 
 export default app;
