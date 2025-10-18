@@ -154,6 +154,28 @@ class TarefaController {
     }
   }
 
+  async concluirTarefa(req, res) {
+    try {
+      const { id } = req.params;
+      
+      const tarefa = await Tarefa.findOne({ id });
+      
+      if (!tarefa) {
+        return res.status(404).json({ error: 'Tarefa não encontrada' });
+      }
+      
+      const mensagem = tarefa.concluir();
+      await tarefa.save();
+      
+      res.json({
+        message: mensagem,
+        tarefa
+      });
+    } catch (error) {
+      console.error('Erro ao concluir tarefa:', error);
+      res.status(500).json({ error: 'Erro interno do servidor' });
+    }
+  }
 
   async removerTarefa(req, res) {
     try {

@@ -42,6 +42,10 @@ router.put('/api/tarefas/:id', (req, res) => {
   tarefaController.editarTarefa(req, res);
 });
 
+router.patch('/api/tarefas/:id/concluir', (req, res) => {
+  tarefaController.concluirTarefa(req, res);
+});
+
 router.delete('/api/tarefas/:id', (req, res) => {
   tarefaController.removerTarefa(req, res);
 });

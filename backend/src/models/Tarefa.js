@@ -58,6 +58,11 @@ tarefaSchema.methods.editar = function({ titulo, descricao, prioridade, estimati
   this.atualizadoEm = new Date();
 };
 
+tarefaSchema.methods.concluir = function() {
+  this.concluida = true;
+  this.atualizadoEm = new Date();
+  return `Tarefa "${this.titulo}" concluída!`;
+};
 
 tarefaSchema.methods.remover = function() {
   return `Tarefa "${this.titulo}" removida`;
