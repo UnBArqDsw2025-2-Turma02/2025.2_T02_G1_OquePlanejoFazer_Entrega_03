@@ -1,4 +1,5 @@
 import { Tarefa, GerenciadorFabricaTarefas } from '../models/Tarefa.js';
+import TarefaIterator from './iterators/TarefaIterator.js';
 
 class TarefaController {
   constructor() {
@@ -89,21 +90,28 @@ class TarefaController {
 
   async listarTarefas(req, res) {
     try {
-      const { tipo, concluida, prioridade } = req.query;
+      // 1. Coleta dos filtros e parâmetros de paginação
+      const { tipo, concluida, prioridade, page, limit } = req.query;
       
       let filtro = {};
-      
       if (tipo) filtro.tipo = tipo;
       if (concluida !== undefined) filtro.concluida = concluida === 'true';
       if (prioridade) filtro.prioridade = prioridade;
 
-      const tarefas = await Tarefa.find(filtro).sort({ criadoEm: -1 });
+      // 2. Instancia o Iterator com o filtro e a paginação
+      const iterator = new TarefaIterator(filtro, page, limit);
+
+      // 3. Usa o iterator para buscar a página atual de tarefas
+      const tarefas = await iterator.getCurrentPage();
+      const paginationInfo = iterator.getPaginationInfo();
       
+      // 4. Retorna a resposta paginada
       res.json({
         message: 'Tarefas listadas com sucesso',
         tarefas,
-        total: tarefas.length
+        pagination: paginationInfo
       });
+
     } catch (error) {
       console.error('Erro ao listar tarefas:', error);
       res.status(500).json({ error: 'Erro interno do servidor' });
