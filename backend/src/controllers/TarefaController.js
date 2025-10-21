@@ -1,9 +1,31 @@
-import { Tarefa, GerenciadorFabricaTarefas } from '../models/Tarefa.js';
+import TarefaFactory from './factories/TarefaFactory.js';
+import { Tarefa } from '../models/Tarefa.js';
 import TarefaIterator from './iterators/TarefaIterator.js';
 
 class TarefaController {
-  constructor() {
-    this.fabricaTarefas = new GerenciadorFabricaTarefas();
+  constructor() {}
+  async createTarefa(req, res) {
+    try {
+      const { tipo, ...dadosDaTarefa } = req.body;
+
+      if (!dadosDaTarefa.descricao) {
+        return res.status(400).json({ error: 'A descrição é obrigatória.' });
+      }
+
+      // 1. Pergunta à fábrica qual Modelo usar, com base no 'tipo'
+      const ModeloCorreto = TarefaFactory.getModel(tipo);
+      // 2. Cria uma nova instância daquele modelo específico
+      const novaTarefa = new ModeloCorreto(dadosDaTarefa);
+      // 3. Salva no banco. O Mongoose sabe como lidar com o discriminator.
+      await novaTarefa.save();
+
+      res.status(201).json({ message: 'Tarefa criada com sucesso', tarefa: novaTarefa });
+
+    } catch (error) {
+      // O erro de validação do Mongoose (ex: 'prazo' faltando) será capturado aqui!
+      console.error('Erro ao criar tarefa:', error);
+      res.status(500).json({ error: 'Erro interno do servidor', details: error.message });
+    }
   }
 
   async criarTarefaSimples(req, res) {
