@@ -23,6 +23,11 @@ const tarefaSchema = new mongoose.Schema({
     enum: ['Baixa', 'Média', 'Alta'], 
     default: 'Média' 
   },
+  categoria: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Categoria',
+    required: true
+  },
   estimativa: { 
     type: Number, 
     required: true 
@@ -110,30 +115,32 @@ class FabricaTarefas {
 }
 
 class FabricaTarefasPontuais extends FabricaTarefas {
-  criarTarefa(titulo, descricao, prioridade, estimativa) {
+  criarTarefa(titulo, descricao, prioridade, estimativa, categoria) {
     return new TarefaSimples({
       titulo,
       descricao,
       prioridade,
       estimativa,
+      categoria,
       tipo: 'simples'
     });
   }
 }
 
 class FabricaTarefasTemporais extends FabricaTarefas {
-  criarTarefaComPrazo(titulo, descricao, prioridade, estimativa, dataVencimento) {
+  criarTarefaComPrazo(titulo, descricao, prioridade, estimativa, dataVencimento, categoria) {
     return new TarefaComPrazo({
       titulo,
       descricao,
       prioridade,
       estimativa,
       dataVencimento,
+      categoria,
       tipo: 'comPrazo'
     });
   }
 
-  criarTarefaRecorrente(titulo, descricao, prioridade, estimativa, repeticao, dataVencimento = null) {
+  criarTarefaRecorrente(titulo, descricao, prioridade, estimativa, repeticao, dataVencimento = null, categoria) {
     return new TarefaRecorrente({
       titulo,
       descricao,
@@ -141,6 +148,7 @@ class FabricaTarefasTemporais extends FabricaTarefas {
       estimativa,
       repeticao,
       dataVencimento,
+      categoria,
       tipo: 'recorrente'
     });
   }
@@ -152,16 +160,16 @@ class GerenciadorFabricaTarefas {
     this.fabricaTemporal = new FabricaTarefasTemporais();
   }
 
-  criarTarefaSimples(titulo, descricao, prioridade, estimativa) {
-    return this.fabricaPontual.criarTarefa(titulo, descricao, prioridade, estimativa);
+  criarTarefaSimples(titulo, descricao, prioridade, estimativa, categoria) {
+    return this.fabricaPontual.criarTarefa(titulo, descricao, prioridade, estimativa, categoria);
   }
 
-  criarTarefaComPrazo(titulo, descricao, prioridade, estimativa, dataVencimento) {
-    return this.fabricaTemporal.criarTarefaComPrazo(titulo, descricao, prioridade, estimativa, dataVencimento);
+  criarTarefaComPrazo(titulo, descricao, prioridade, estimativa, dataVencimento, categoria) {
+    return this.fabricaTemporal.criarTarefaComPrazo(titulo, descricao, prioridade, estimativa, dataVencimento, categoria);
   }
 
-  criarTarefaRecorrente(titulo, descricao, prioridade, estimativa, repeticao, dataVencimento) {
-    return this.fabricaTemporal.criarTarefaRecorrente(titulo, descricao, prioridade, estimativa, repeticao, dataVencimento);
+  criarTarefaRecorrente(titulo, descricao, prioridade, estimativa, repeticao, dataVencimento, categoria) {
+    return this.fabricaTemporal.criarTarefaRecorrente(titulo, descricao, prioridade, estimativa, repeticao, dataVencimento, categoria);
   }
 }
 

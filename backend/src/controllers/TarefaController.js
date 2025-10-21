@@ -8,15 +8,15 @@ class TarefaController {
 
   async criarTarefaSimples(req, res) {
     try {
-      const { titulo, descricao, prioridade, estimativa } = req.body;
+      const { titulo, descricao, prioridade, estimativa, categoria } = req.body;
       
-      if (!titulo || !descricao || !estimativa) {
+      if (!titulo || !descricao || !estimativa || !categoria) {
         return res.status(400).json({ 
-          error: 'Titulo, descrição e estimativa são obrigatórios' 
+          error: 'Titulo, descrição, estimativa e categoria são obrigatórios' 
         });
       }
 
-      const tarefa = this.fabricaTarefas.criarTarefaSimples(titulo, descricao, prioridade, estimativa);
+      const tarefa = this.fabricaTarefas.criarTarefaSimples(titulo, descricao, prioridade, estimativa, categoria);
       await tarefa.save();
       
       res.status(201).json({
@@ -31,11 +31,11 @@ class TarefaController {
 
   async criarTarefaComPrazo(req, res) {
     try {
-      const { titulo, descricao, prioridade, estimativa, dataVencimento } = req.body;
+      const { titulo, descricao, prioridade, estimativa, dataVencimento, categoria } = req.body;
       
-      if (!titulo || !descricao || !estimativa || !dataVencimento) {
+      if (!titulo || !descricao || !estimativa || !dataVencimento || !categoria) {
         return res.status(400).json({ 
-          error: 'Titulo, descrição, estimativa e data de vencimento são obrigatórios' 
+          error: 'Titulo, descrição, estimativa, data de vencimento e categoria são obrigatórios' 
         });
       }
 
@@ -44,7 +44,8 @@ class TarefaController {
         descricao, 
         prioridade, 
         estimativa, 
-        new Date(dataVencimento)
+        new Date(dataVencimento),
+        categoria
       );
       await tarefa.save();
       
@@ -60,11 +61,11 @@ class TarefaController {
 
   async criarTarefaRecorrente(req, res) {
     try {
-      const { titulo, descricao, prioridade, estimativa, repeticao, dataVencimento } = req.body;
+      const { titulo, descricao, prioridade, estimativa, repeticao, dataVencimento, categoria } = req.body;
       
-      if (!titulo || !descricao || !estimativa || !repeticao) {
+      if (!titulo || !descricao || !estimativa || !repeticao || !categoria) {
         return res.status(400).json({ 
-          error: 'Titulo, descrição, estimativa e repetição são obrigatórios' 
+          error: 'Titulo, descrição, estimativa, repetição e categoria são obrigatórios' 
         });
       }
 
@@ -74,7 +75,8 @@ class TarefaController {
         prioridade, 
         estimativa, 
         repeticao,
-        dataVencimento ? new Date(dataVencimento) : null
+        dataVencimento ? new Date(dataVencimento) : null,
+        categoria
       );
       await tarefa.save();
       
@@ -91,12 +93,13 @@ class TarefaController {
   async listarTarefas(req, res) {
     try {
       // 1. Coleta dos filtros e parâmetros de paginação
-      const { tipo, concluida, prioridade, page, limit } = req.query;
-      
+      const { tipo, concluida, prioridade, categoria, page, limit } = req.query;
+
       let filtro = {};
       if (tipo) filtro.tipo = tipo;
       if (concluida !== undefined) filtro.concluida = concluida === 'true';
       if (prioridade) filtro.prioridade = prioridade;
+      if (categoria) filtro.categoria = categoria;
 
       // 2. Instancia o Iterator com o filtro e a paginação
       const iterator = new TarefaIterator(filtro, page, limit);
@@ -104,7 +107,7 @@ class TarefaController {
       // 3. Usa o iterator para buscar a página atual de tarefas
       const tarefas = await iterator.getCurrentPage();
       const paginationInfo = iterator.getPaginationInfo();
-      
+
       // 4. Retorna a resposta paginada
       res.json({
         message: 'Tarefas listadas com sucesso',

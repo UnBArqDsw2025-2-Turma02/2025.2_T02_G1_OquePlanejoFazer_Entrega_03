@@ -19,7 +19,8 @@ class TarefaIterator {
     const tarefas = await Tarefa.find(this.filtro)
       .sort({ criadoEm: -1 })
       .skip(skip)
-      .limit(this.limit);
+      .limit(this.limit)
+      .populate('categoria');
 
     // Conta o total de documentos (apenas na primeira página para otimizar)
     if (this.total === 0) {

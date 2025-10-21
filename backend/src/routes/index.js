@@ -1,9 +1,11 @@
 import express from 'express';
 import { Test } from '../models/test.js';
 import TarefaController from '../controllers/TarefaController.js';
+import CategoriaController from '../controllers/CategoriaController.js';
 
 const router = express.Router();
 const tarefaController = new TarefaController();
+const categoriaController = new CategoriaController();
 
 
 router.get('/test-db', async (req, res) => {
@@ -48,6 +50,24 @@ router.patch('/api/tarefas/:id/concluir', (req, res) => {
 
 router.delete('/api/tarefas/:id', (req, res) => {
   tarefaController.removerTarefa(req, res);
+});
+
+
+// Rotas de Categorias
+router.post('/api/categorias', (req, res) => {
+  categoriaController.criarCategoria(req, res);
+});
+
+router.get('/api/categorias', (req, res) => {
+  categoriaController.listarCategorias(req, res);
+});
+
+router.put('/api/categorias/:id', (req, res) => {
+  categoriaController.editarCategoria(req, res);
+});
+
+router.delete('/api/categorias/:id', (req, res) => {
+  categoriaController.removerCategoria(req, res);
 });
 
 export default router;
