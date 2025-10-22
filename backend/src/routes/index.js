@@ -62,6 +62,11 @@ router.get('/api/categorias', (req, res) => {
   categoriaController.listarCategorias(req, res);
 });
 
+//rota de categorias paginadas
+router.get('/api/categorias/paginadas', (req, res) => {
+  categoriaController.listarCategoriasPaginadas(req, res);
+});
+
 router.put('/api/categorias/:id', (req, res) => {
   categoriaController.editarCategoria(req, res);
 });
