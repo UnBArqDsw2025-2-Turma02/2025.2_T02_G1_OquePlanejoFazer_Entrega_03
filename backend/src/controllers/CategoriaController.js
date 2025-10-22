@@ -1,5 +1,6 @@
 import Categoria from '../models/Categoria.js';
 import CategoriaFactory from './factories/CategoriaFactory.js';
+import CategoriaIterator from './iterators/CategoriaIterator.js';
 
 class CategoriaController {
   async criarCategoria(req, res) {
@@ -34,6 +35,20 @@ class CategoriaController {
       res.json({ message: 'Categorias listadas com sucesso', categorias });
     } catch (error) {
       console.error('Erro ao listar categorias:', error);
+      res.status(500).json({ error: 'Erro interno do servidor' });
+    }
+  }
+
+  //lista categorias com paginacao usando o iterator
+  async listarCategoriasPaginadas(req, res) {
+    try {
+      const { page = 1, limit = 5 } = req.query;
+      const iterator = new CategoriaIterator({}, page, limit);
+      const categorias = await iterator.getCurrentPage();
+      const pagination = iterator.getPaginationInfo();
+      res.json({ categorias, pagination });
+    } catch (error) {
+      console.error('Erro ao listar categorias paginadas:', error);
       res.status(500).json({ error: 'Erro interno do servidor' });
     }
   }
