@@ -1,8 +1,13 @@
 import { Tarefa, GerenciadorFabricaTarefas } from '../models/Tarefa.js';
+import { TarefaService } from '../services/TarefaService.js';
+import { TarefaCommandInvoker } from '../models/commands/TarefaCommandInvoker.js';
+import { TarefaCommandFactory } from '../models/commands/TarefaCommandFactory.js';
 
 class TarefaController {
   constructor() {
     this.fabricaTarefas = new GerenciadorFabricaTarefas();
+    this.tarefaService = new TarefaService();
+    this.tarefaCommandInvoker = new TarefaCommandInvoker();
   }
 
   async criarTarefaSimples(req, res) {
@@ -135,14 +140,14 @@ class TarefaController {
       const { id } = req.params;
       const dadosAtualizacao = req.body;
       
-      const tarefa = await Tarefa.findOne({ id });
+      const comando = TarefaCommandFactory.criarComandoInteligente(
+        id, 
+        dadosAtualizacao, 
+        this.tarefaService
+      );
       
-      if (!tarefa) {
-        return res.status(404).json({ error: 'Tarefa não encontrada' });
-      }
-      
-      tarefa.editar(dadosAtualizacao);
-      await tarefa.save();
+      // Executar comando através do invoker
+      const tarefa = await this.tarefaCommandInvoker.executarComando(comando);
       
       res.json({
         message: 'Tarefa editada com sucesso',
@@ -150,6 +155,17 @@ class TarefaController {
       });
     } catch (error) {
       console.error('Erro ao editar tarefa:', error);
+      
+      if (error.message === 'Tarefa não encontrada') {
+        return res.status(404).json({ error: error.message });
+      }
+      
+      if (error.message.includes('não pode estar vazio') || 
+          error.message.includes('deve ser') ||
+          error.message.includes('inválida')) {
+        return res.status(400).json({ error: error.message });
+      }
+      
       res.status(500).json({ error: 'Erro interno do servidor' });
     }
   }
@@ -199,6 +215,7 @@ class TarefaController {
       res.status(500).json({ error: 'Erro interno do servidor' });
     }
   }
+
 
 }
 
