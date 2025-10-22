@@ -1,6 +1,7 @@
 import express from 'express';
 import { Test } from '../models/test.js';
 import TarefaController from '../controllers/TarefaController.js';
+import AuthController from '../controllers/AuthController.js';
 
 const router = express.Router();
 const tarefaController = new TarefaController();
@@ -33,6 +34,8 @@ router.post('/api/tarefas/recorrente', (req, res) => {
 router.get('/api/tarefas', (req, res) => {
   tarefaController.listarTarefas(req, res);
 });
+
+router.post('/api/register', AuthController.register);
 
 router.get('/api/tarefas/:id', (req, res) => {
   tarefaController.buscarTarefaPorId(req, res);
