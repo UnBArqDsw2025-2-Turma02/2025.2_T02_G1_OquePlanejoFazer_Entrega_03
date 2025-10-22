@@ -6,6 +6,7 @@ import { TarefaCommandFactory } from '../models/commands/TarefaCommandFactory.js
 class TarefaController {
   constructor() {
     this.fabricaTarefas = new GerenciadorFabricaTarefas();
+    // Bridge Pattern: TarefaService usa implementação de persistência
     this.tarefaService = new TarefaService();
     this.tarefaCommandInvoker = new TarefaCommandInvoker();
   }

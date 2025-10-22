@@ -1,100 +1,33 @@
 import { Tarefa, TarefaSimples, TarefaComPrazo, TarefaRecorrente, GerenciadorFabricaTarefas } from '../models/Tarefa.js';
+import { PersistenciaMongoDB } from './PersistenciaTarefa.js';
 
 export class TarefaService {
-  constructor() {
+  constructor(persistencia = null) {
     this.fabricaTarefas = new GerenciadorFabricaTarefas();
+    this.persistencia = persistencia || new PersistenciaMongoDB(Tarefa, this.fabricaTarefas);
   }
 
   async buscarTarefaPorId(tarefaId) {
-    const tarefa = await Tarefa.findOne({ id: tarefaId });
-    
-    if (!tarefa) {
-      throw new Error('Tarefa não encontrada');
-    }
-    
-    return tarefa;
+    return await this.persistencia.buscarPorId(tarefaId);
   }
 
   async editarTarefa(tarefaId, dadosAtualizacao) {
-    const tarefa = await this.buscarTarefaPorId(tarefaId);
-    
-    tarefa.editar(dadosAtualizacao);
-    
-    await tarefa.save();
-    
-    return tarefa;
+    return await this.persistencia.atualizar(tarefaId, dadosAtualizacao);
   }
 
   async converterTipoTarefa(tarefaAtual, novoTipo, dadosAtualizacao) {
-    const dadosBase = {
-      titulo: dadosAtualizacao.titulo || tarefaAtual.titulo,
-      descricao: dadosAtualizacao.descricao || tarefaAtual.descricao,
-      prioridade: dadosAtualizacao.prioridade || tarefaAtual.prioridade,
-      estimativa: dadosAtualizacao.estimativa || tarefaAtual.estimativa,
-      concluida: tarefaAtual.concluida,
-      criadoEm: tarefaAtual.criadoEm,
-      atualizadoEm: new Date()
-    };
+    return await this.persistencia.converterTipo(tarefaAtual, novoTipo, dadosAtualizacao);
+  }
 
-    let novaTarefa;
-    switch (novoTipo) {
-      case 'simples':
-        novaTarefa = this.fabricaTarefas.criarTarefaSimples(
-          dadosBase.titulo,
-          dadosBase.descricao,
-          dadosBase.prioridade,
-          dadosBase.estimativa
-        );
-        break;
-        
-      case 'comPrazo':
-        if (!dadosAtualizacao.dataVencimento) {
-          throw new Error('Data de vencimento é obrigatória para tarefa com prazo');
-        }
-        novaTarefa = this.fabricaTarefas.criarTarefaComPrazo(
-          dadosBase.titulo,
-          dadosBase.descricao,
-          dadosBase.prioridade,
-          dadosBase.estimativa,
-          dadosAtualizacao.dataVencimento
-        );
-        break;
-        
-      case 'recorrente':
-        if (!dadosAtualizacao.repeticao) {
-          throw new Error('Repetição é obrigatória para tarefa recorrente');
-        }
-        novaTarefa = this.fabricaTarefas.criarTarefaRecorrente(
-          dadosBase.titulo,
-          dadosBase.descricao,
-          dadosBase.prioridade,
-          dadosBase.estimativa,
-          dadosAtualizacao.repeticao,
-          dadosAtualizacao.dataVencimento || null
-        );
-        break;
-        
-      default:
-        throw new Error(`Tipo de tarefa inválido: ${novoTipo}`);
-    }
+  async listarTarefas() {
+    return await this.persistencia.buscarTodos();
+  }
 
-    novaTarefa.id = tarefaAtual.id;
-    novaTarefa.criadoEm = dadosBase.criadoEm;
-    novaTarefa.concluida = dadosBase.concluida;
-    novaTarefa.atualizadoEm = dadosBase.atualizadoEm;
+  async removerTarefa(tarefaId) {
+    return await this.persistencia.deletar(tarefaId);
+  }
 
-    const session = await Tarefa.startSession();
-    
-    try {
-      await session.withTransaction(async () => {
-        await Tarefa.deleteOne({ _id: tarefaAtual._id }).session(session);
-        
-        await novaTarefa.save({ session });
-      });
-      
-      return novaTarefa;
-    } finally {
-      await session.endSession();
-    }
+  async salvarTarefa(tarefa) {
+    return await this.persistencia.salvar(tarefa);
   }
 }
