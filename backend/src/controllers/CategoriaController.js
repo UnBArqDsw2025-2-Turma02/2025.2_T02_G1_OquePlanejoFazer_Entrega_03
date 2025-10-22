@@ -1,13 +1,22 @@
 import Categoria from '../models/Categoria.js';
+import CategoriaFactory from './factories/CategoriaFactory.js';
 
 class CategoriaController {
   async criarCategoria(req, res) {
     try {
-      const { nome } = req.body;
-      if (!nome) {
-        return res.status(400).json({ error: 'Nome da categoria é obrigatório' });
+      const { nome, cor } = req.body;
+      if (!nome || !cor) {
+        return res.status(400).json({ error: 'Nome e cor da categoria são obrigatórios' });
       }
-      const categoria = new Categoria({ nome });
+
+      // Usando Factory para validar e criar categoria
+      try {
+        CategoriaFactory.criarCategoria(nome, cor);
+      } catch (err) {
+        return res.status(400).json({ error: err.message });
+      }
+
+      const categoria = new Categoria({ nome, cor });
       await categoria.save();
       res.status(201).json({ message: 'Categoria criada com sucesso', categoria });
     } catch (error) {
