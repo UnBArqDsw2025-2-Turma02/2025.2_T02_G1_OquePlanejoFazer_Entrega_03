@@ -140,8 +140,7 @@ class TarefaController {
       const { id } = req.params;
       const dadosAtualizacao = req.body;
       
-      // Criar comando usando o factory
-      const comando = TarefaCommandFactory.criarComandoEditarTarefa(
+      const comando = TarefaCommandFactory.criarComandoInteligente(
         id, 
         dadosAtualizacao, 
         this.tarefaService
