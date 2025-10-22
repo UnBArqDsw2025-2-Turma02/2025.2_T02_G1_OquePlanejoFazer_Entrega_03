@@ -1,7 +1,7 @@
 import { Tarefa, GerenciadorFabricaTarefas } from '../models/Tarefa.js';
 import { TarefaService } from '../services/TarefaService.js';
-import { TarefaCommandInvoker } from '../commands/TarefaCommandInvoker.js';
-import { TarefaCommandFactory } from '../commands/TarefaCommandFactory.js';
+import { TarefaCommandInvoker } from '../models/commands/TarefaCommandInvoker.js';
+import { TarefaCommandFactory } from '../models/commands/TarefaCommandFactory.js';
 
 class TarefaController {
   constructor() {
