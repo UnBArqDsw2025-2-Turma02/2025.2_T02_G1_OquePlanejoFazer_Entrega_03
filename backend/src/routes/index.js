@@ -2,22 +2,17 @@ import express from 'express';
 import { Test } from '../models/test.js';
 import TarefaController from '../controllers/TarefaController.js';
 import AuthController from '../controllers/AuthController.js';
+import authProxy from '../middlewares/AuthProxy.js';
 
 const router = express.Router();
 const tarefaController = new TarefaController();
 
+router.post('/api/register', AuthController.register);
+router.post('/api/login', AuthController.login);
 
-router.get('/test-db', async (req, res) => {
-  try {
-    const test = await Test.create({ title: 'Primeira tarefa conectada!' });
-    res.json(test);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Erro ao testar conexão com o banco' });
-  }
+router.get('/api/me', authProxy, (req, res) => {
+  res.json({ message: 'Acesso autorizado pelo Proxy!', userId: req.userId });
 });
-
-// Rotas de Tarefas
 
 router.post('/api/tarefas/simples', (req, res) => {
   tarefaController.criarTarefaSimples(req, res);

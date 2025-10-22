@@ -1,5 +1,6 @@
 import User from '../models/User.js';
 import authSubject from '../events/AuthObserver.js';
+import jwt from 'jsonwebtoken';
 
 class AuthController {
   async register(req, res) {
@@ -16,6 +17,23 @@ class AuthController {
         return res.status(409).json({ error: 'Este e-mail já está em uso.' });
       }
       res.status(500).json({ error: 'Erro ao registrar usuário.' });
+    }
+  }
+
+  async login(req, res) {
+    try {
+      const { email, password } = req.body;
+      const user = await User.findOne({ email });
+
+      if (!user || user.password !== password) {
+        return res.status(401).json({ error: 'Email ou senha inválidos.' });
+      }
+
+      const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1d' });
+
+      res.json({ message: 'Login bem-sucedido!', token });
+    } catch (error) {
+      res.status(500).json({ error: 'Erro ao fazer login.' });
     }
   }
 }
