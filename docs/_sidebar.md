@@ -29,7 +29,7 @@
        - **3.3.1. Command**
           - [3.2.1.1. Implementação 01 - US()](README.md)
        - **3.3.2. Iterator**
-          - [3.2.2.1. Implementação 01 - US07](PadroesDeProjeto/3.3.GoFsComportamentais/3.2.2.1.Interator_US07.md)
+          - [3.2.2.1. Implementação 01 - US07](PadroesDeProjeto/3.3.GoFsComportamentais/3.2.2.1.Iterator_US07.md)
        - **3.3.3. State**
           - [3.2.3.1. Implementação 01 - US()](README.md)
        - **3.3.4. Observer**
