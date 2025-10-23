@@ -1,6 +1,4 @@
 // Em um arquivo separado, ex: 'iterators/TarefaIterator.js'
-
-// Em um arquivo separado, ex: 'iterators/TarefaIterator.js'
 import { Tarefa } from '../../models/Tarefa.js';
 
 class TarefaIterator {
