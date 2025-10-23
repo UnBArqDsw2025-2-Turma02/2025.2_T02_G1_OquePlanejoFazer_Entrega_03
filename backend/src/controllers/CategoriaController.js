@@ -1,6 +1,4 @@
-import Categoria from '../models/Categoria.js';
-import CategoriaFactory from './factories/CategoriaFactory.js';
-import CategoriaIterator from './iterators/CategoriaIterator.js';
+import CategoriaService from '../services/CategoriaService.js';
 
 class CategoriaController {
   async criarCategoria(req, res) {
@@ -9,46 +7,28 @@ class CategoriaController {
       if (!nome || !cor) {
         return res.status(400).json({ error: 'Nome e cor da categoria são obrigatórios' });
       }
-
-      // Usando Factory para validar e criar categoria
-      try {
-        CategoriaFactory.criarCategoria(nome, cor);
-      } catch (err) {
-        return res.status(400).json({ error: err.message });
-      }
-
-      const categoria = new Categoria({ nome, cor });
-      await categoria.save();
+      const categoria = await CategoriaService.criarCategoria(nome, cor);
       res.status(201).json({ message: 'Categoria criada com sucesso', categoria });
     } catch (error) {
-      if (error.code === 11000) {
-        return res.status(409).json({ error: 'Categoria já existe' });
-      }
-      console.error('Erro ao criar categoria:', error);
-      res.status(500).json({ error: 'Erro interno do servidor' });
+      res.status(400).json({ error: error.message });
     }
   }
 
   async listarCategorias(req, res) {
     try {
-      const categorias = await Categoria.find().sort({ criadoEm: -1 });
+      const categorias = await CategoriaService.listarCategorias();
       res.json({ message: 'Categorias listadas com sucesso', categorias });
     } catch (error) {
-      console.error('Erro ao listar categorias:', error);
       res.status(500).json({ error: 'Erro interno do servidor' });
     }
   }
 
-  //lista categorias com paginacao usando o iterator
   async listarCategoriasPaginadas(req, res) {
     try {
       const { page = 1, limit = 5 } = req.query;
-      const iterator = new CategoriaIterator({}, page, limit);
-      const categorias = await iterator.getCurrentPage();
-      const pagination = iterator.getPaginationInfo();
-      res.json({ categorias, pagination });
+      const result = await CategoriaService.listarCategoriasPaginadas(Number(page), Number(limit));
+      res.json(result);
     } catch (error) {
-      console.error('Erro ao listar categorias paginadas:', error);
       res.status(500).json({ error: 'Erro interno do servidor' });
     }
   }
@@ -57,34 +37,20 @@ class CategoriaController {
     try {
       const { id } = req.params;
       const { nome } = req.body;
-      const categoria = await Categoria.findById(id);
-      if (!categoria) {
-        return res.status(404).json({ error: 'Categoria não encontrada' });
-      }
-      if (nome) categoria.nome = nome;
-      await categoria.save();
+      const categoria = await CategoriaService.editarCategoria(id, nome);
       res.json({ message: 'Categoria editada com sucesso', categoria });
     } catch (error) {
-      if (error.code === 11000) {
-        return res.status(409).json({ error: 'Categoria já existe' });
-      }
-      console.error('Erro ao editar categoria:', error);
-      res.status(500).json({ error: 'Erro interno do servidor' });
+      res.status(400).json({ error: error.message });
     }
   }
 
   async removerCategoria(req, res) {
     try {
       const { id } = req.params;
-      const categoria = await Categoria.findById(id);
-      if (!categoria) {
-        return res.status(404).json({ error: 'Categoria não encontrada' });
-      }
-      await Categoria.deleteOne({ _id: id });
-      res.json({ message: 'Categoria removida com sucesso', categoriaRemovida: categoria });
+      const categoria = await CategoriaService.removerCategoria(id);
+      res.json({ message: 'Categoria removida com sucesso', categoria });
     } catch (error) {
-      console.error('Erro ao remover categoria:', error);
-      res.status(500).json({ error: 'Erro interno do servidor' });
+      res.status(400).json({ error: error.message });
     }
   }
 }
