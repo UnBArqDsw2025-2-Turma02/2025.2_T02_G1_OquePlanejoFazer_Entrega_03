@@ -9,7 +9,7 @@
        - **3.1.1. Abstract Factory**
           - [3.1.1.1. Implementação 01 - US()](README.md)
        - **3.1.2. Factory Method**
-          - [3.1.2.1. Implementação 01 - US07](padroesDeProjeto/3.1.2.1.Factory_US07.md)
+          - [3.1.2.1. Implementação 01 - US07](padroesDeProjeto/3.1.GoFsCriacionais/3.1.2.1.Factory_US07.md)
        - **3.1.3. Builder**
           - [3.1.3.1. Implementação 01 - US()](README.md)
        - **3.1.4. Singleton**
