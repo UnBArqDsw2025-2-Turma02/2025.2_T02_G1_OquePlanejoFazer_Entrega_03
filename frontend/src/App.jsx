@@ -1,19 +1,28 @@
-import { useEffect, useState } from 'react';
-import axios from 'axios';
+import { useState } from 'react';
+import AuthPage from './components/AuthPage';
+import Dashboard from './components/Dashboard';
+import './App.css'; 
 
 function App() {
-  const [msg, setMsg] = useState('');
+  const [token, setToken] = useState(localStorage.getItem('token'));
 
-  useEffect(() => {
-    axios.get('http://localhost:3000')
-      .then(res => setMsg(res.data.message))
-      .catch(err => setMsg('Erro ao conectar ao backend'));
-  }, []);
+  const handleLoginSuccess = (newToken) => {
+    localStorage.setItem('token', newToken); 
+    setToken(newToken);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('token'); 
+    setToken(null);
+  };
 
   return (
-    <div style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
-      <h1>Frontend + Backend conectado</h1>
-      <p>{msg}</p>
+    <div className="App">
+      {token ? (
+        <Dashboard onLogout={handleLogout} />
+      ) : (
+        <AuthPage onLoginSuccess={handleLoginSuccess} />
+      )}
     </div>
   );
 }
