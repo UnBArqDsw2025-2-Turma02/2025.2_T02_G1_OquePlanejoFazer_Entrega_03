@@ -103,6 +103,69 @@ app.get('/api/me', authProxy, (req, res) => {
 });
 ```
 
+**Front-End (React - Gerenciamento de Token e Acesso)**
+
+No front-end, a interação com o Proxy do back-end é crucial para o fluxo de autenticação. O front-end é responsável por receber o token gerado no login e enviá-lo nas requisições subsequentes, onde o authProxy irá atuar.
+
+*Gerenciamento de Estado de Autenticação (App.js):*
+O componente principal gerencia o estado do token de autenticação, decidindo se o usuário vê a página de autenticação (AuthPage) ou o painel de controle (Dashboard).
+
+```
+// src/App.js
+import { useState } from 'react';
+import Dashboard from './components/Dashboard';
+import AuthPage from './components/AuthPage';
+import './App.css'; 
+
+function App() {
+  const [token, setToken] = useState(localStorage.getItem('token'));
+
+  const handleLoginSuccess = (newToken) => {
+    localStorage.setItem('token', newToken); 
+    setToken(newToken);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('token'); 
+    setToken(null);
+  };
+
+  return (
+    <div className="App">
+      {token ? (
+        <Dashboard onLogout={handleLogout} />
+      ) : (
+        <AuthPage onLoginSuccess={handleLoginSuccess} />
+      )}
+    </div>
+  );
+}
+
+export default App;
+```
+
+**Exemplo de Rota Protegida (Dashboard.js):**
+
+O Dashboard é um exemplo de componente que só é renderizado se o token estiver presente, e suas requisições internas (se houver) seriam protegidas pelo authProxy no back-end.
+
+```
+// src/components/Dashboard.js
+function Dashboard({ onLogout }) {
+  // ... (lógica para buscar dados protegidos, que usaria o token)
+  return (
+    <div className="dashboard-container">
+      <h1>Bem-vindo!</h1>
+      <p>Você está logado no sistema.</p>
+      <button onClick={onLogout}>Sair</button>
+    </div>
+  );
+}
+
+export default Dashboard;
+```
+
+
+
 #### Integração ao sistema
 
 O `authProxy` é integrado às rotas do Express que exigem autenticação. Ele é aplicado como um middleware antes do controlador da rota, garantindo que a validação do token ocorra antes que a lógica de negócio seja executada.
@@ -173,3 +236,10 @@ Foram realizados testes para confirmar:
 
 *   O **`authProxy` (Node.js)** é fundamental para implementar uma camada de segurança robusta na API. Ele centraliza a lógica de verificação de tokens JWT, garantindo que todas as rotas protegidas apliquem a mesma política de segurança de forma consistente. Isso evita a duplicação de código de autenticação em cada controlador e facilita a manutenção e evolução das regras de segurança.
 *   O padrão Proxy, neste caso, permite a **separação de preocupações (Separation of Concerns)**, isolando a preocupação de segurança (autenticação) da preocupação de negócio (lógica do controlador). Isso torna o código mais limpo, modular e fácil de entender e testar.
+
+
+## Histórico de Versões
+| Versão | Alteração | Responsável | Data | Revisor |  Detalhes da Revisão | Data da Revisão |
+|--------|-----------|-------------|------|---------|----------------------|-----------------|
+| 1.0 | documentação geral da págiina | [Maria Clara](https://github.com/alvezclari) | 23/10/2025 | |  |  |
+| 1.1 | adicionando front end| [Maria Clara](https://github.com/alvezclari) | 23/10/2025 | |  |  |

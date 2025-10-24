@@ -77,8 +77,65 @@ Object.freeze(SingletonConnection);
 export default SingletonConnection;
 ```
 
-**Front-end (React - Gerenciador de Configurações/API Client)**
+**Front-end**
+No desenvolvimento front-end com React, a implementação de um Singleton para o cliente de API é uma prática de arquitetura que garante a consistência e a centralização das configurações de comunicação com o back-end. Ao invés de configurar a URL base e os headers em cada componente que precisa fazer uma requisição, o componente simplesmente importa a instância única (api) e a utiliza. Isso simplifica a manutenção e facilita a adição de interceptores globais (para tratamento de erros, por exemplo).
 
+```
+// src/components/LoginForm.jsx
+import { useState } from 'react';
+import axios from 'axios';
+
+function LoginForm({ onLoginSuccess }) {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+
+    try {
+      const response = await axios.post('http://localhost:3333/api/login', {
+        email,
+        password,
+      });
+      onLoginSuccess(response.data.token);
+    } catch (err) {
+      setError(err.response?.data?.error || 'Erro ao fazer login.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="auth-form">
+      <h2>Login</h2>
+      <input
+        type="email"
+        placeholder="Email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        required
+      />
+      <input
+        type="password"
+        placeholder="Senha"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        required
+      />
+      {error && <p className="error-message">{error}</p>}
+      <button type="submit" disabled={loading}>
+        {loading ? 'Entrando...' : 'Entrar'}
+      </button>
+    </form>
+  );
+}
+
+export default LoginForm;
+```
 
 #### Integração ao sistema
 
@@ -98,7 +155,7 @@ export default SingletonConnection;
     }
     ```
 
-*   **Front-end (React):**
+*   **Front-end (React):** O cliente de API Singleton (api) é importado e utilizado em componentes React (como LoginForm e RegisterForm) para realizar chamadas à API.
 
 ### Resultado Final
 
@@ -114,3 +171,9 @@ A aplicação do padrão **Singleton** no projeto "O que planejo fazer" resultou
 *   Para um **Gerenciador de Configurações Singleton** no back-end, ele assegura que todas as partes da aplicação acessem o mesmo conjunto de configurações, o que é vital para a segurança (chaves de API, segredos) e para a consistência do comportamento da aplicação em diferentes ambientes (desenvolvimento, produção).
 
 Esses usos do padrão Singleton são essenciais para o projeto, que lida com dados de usuário e interações em tempo real, garantindo um sistema robusto, eficiente e seguro.
+
+## Histórico de Versões
+| Versão | Alteração | Responsável | Data | Revisor |  Detalhes da Revisão | Data da Revisão |
+|--------|-----------|-------------|------|---------|----------------------|-----------------|
+| 1.0 | documentação geral da págiina | [Maria Clara](https://github.com/alvezclari) | 23/10/2025 | |  |  |
+| 1.1 | adicionando front end| [Maria Clara](https://github.com/alvezclari) | 23/10/2025 | |  |  |

@@ -78,6 +78,46 @@ authSubject.subscribe(new LogService());
 
 export default authSubject;
 ```
+**Front-end (React - Acionamento do Evento)**
+No front-end, o componente RegisterForm é o ponto de contato que aciona o evento de registro. Uma vez que a requisição POST é bem-sucedida, o back-end (onde o Observer está implementado) é responsável por notificar os observadores.
+```
+// src/components/RegisterForm.jsx
+import { useState } from 'react';
+import axios from 'axios';
+
+function RegisterForm({ onRegisterSuccess }) {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+    setSuccess('');
+
+    try {
+      // Requisição que aciona o Controller no Back-end, que por sua vez, notifica o Observer
+      await axios.post('http://localhost:3333/api/register', {
+        email,
+        password,
+      });
+      setSuccess('Cadastro realizado com sucesso! Você já pode fazer o login.');
+      onRegisterSuccess(); 
+    } catch (err) {
+      setError(err.response?.data?.error || 'Erro ao cadastrar.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // ... (restante do JSX do formulário)
+}
+
+export default RegisterForm;
+```
 
 **Integração ao sistema**
 
@@ -153,3 +193,9 @@ A aplicação do padrão **Observer** no projeto "O que planejo fazer" resultou 
 *   O **Observer para Notificações de Registro de Usuário (Node.js)** permite que diferentes módulos (serviço de e-mail, serviço de log) reajam de forma independente ao evento de registro de um novo usuário. Isso evita que o `AuthController` precise conhecer e chamar diretamente cada um desses serviços, reduzindo o acoplamento e tornando o sistema mais fácil de estender com novas funcionalidades de pós-registro.
 *   O padrão Observer é ideal para cenários onde um objeto precisa notificar muitos outros objetos sobre mudanças de estado, mas não quer ter um conhecimento profundo sobre esses objetos. Isso é crucial para construir aplicações escaláveis e de fácil manutenção, onde novas funcionalidades podem ser adicionadas como observadores sem impactar o código existente do sujeito.
 
+
+## Histórico de Versões
+| Versão | Alteração | Responsável | Data | Revisor |  Detalhes da Revisão | Data da Revisão |
+|--------|-----------|-------------|------|---------|----------------------|-----------------|
+| 1.0 | documentação geral da págiina | [Maria Clara](https://github.com/alvezclari) | 23/10/2025 | |  |  |
+| 1.1 | adicionando front end| [Maria Clara](https://github.com/alvezclari) | 23/10/2025 | |  |  |
