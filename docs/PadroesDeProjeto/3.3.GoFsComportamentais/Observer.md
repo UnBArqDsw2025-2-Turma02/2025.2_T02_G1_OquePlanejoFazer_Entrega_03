@@ -80,7 +80,8 @@ export default authSubject;
 ```
 **Front-end (React - Acionamento do Evento)**
 No front-end, o componente RegisterForm é o ponto de contato que aciona o evento de registro. Uma vez que a requisição POST é bem-sucedida, o back-end (onde o Observer está implementado) é responsável por notificar os observadores.
-```
+
+```javascript
 // src/components/RegisterForm.jsx
 import { useState } from 'react';
 import axios from 'axios';
