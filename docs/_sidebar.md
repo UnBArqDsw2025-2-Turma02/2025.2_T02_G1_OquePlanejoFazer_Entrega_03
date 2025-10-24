@@ -11,7 +11,7 @@
        - **3.1.2. Factory Method**
           - [3.1.2.1. Implementação 01 - US07](padroesDeProjeto/3.1.GoFsCriacionais/3.1.2.1.Factory_US07.md)
        - **3.1.3. Builder**
-          - [3.1.3.1. Implementação 01 - US()](README.md)
+          - [3.1.3.1. Implementação 01 - US04](padroesDeProjeto/3.1.GoFsCriacionais/3.1.2.2.Builder_US04.md)
        - **3.1.4. Singleton**
           - [3.1.4.1. Implementação 01 - US()](README.md)
        - **3.1.5. Prototype**
