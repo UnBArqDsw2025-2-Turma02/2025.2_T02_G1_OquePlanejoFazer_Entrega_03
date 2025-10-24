@@ -1,6 +1,7 @@
 import express from 'express';
 import { Test } from '../models/test.js';
 import TarefaController from '../controllers/TarefaController.js';
+import { buildTask, triggerPriorityChange } from '../controllers/taskControllers.js';
 
 const router = express.Router();
 const tarefaController = new TarefaController();
@@ -49,5 +50,10 @@ router.patch('/api/tarefas/:id/concluir', (req, res) => {
 router.delete('/api/tarefas/:id', (req, res) => {
   tarefaController.removerTarefa(req, res);
 });
+
+router.put("/api/tarefas/:id/trigger-priority", triggerPriorityChange);
+
+router.post('/mock-task', buildTask);
+
 
 export default router;

@@ -20,7 +20,7 @@ const tarefaSchema = new mongoose.Schema({
   },
   prioridade: { 
     type: String, 
-    enum: ['Baixa', 'Média', 'Alta'], 
+    enum: ['Baixa', 'Média', 'Alta', 'SUPER PRIORIDADE'], 
     default: 'Média' 
   },
   estimativa: { 
@@ -165,13 +165,75 @@ class GerenciadorFabricaTarefas {
   }
 }
 
-export { 
-  Tarefa, 
-  TarefaSimples, 
-  TarefaComPrazo, 
-  TarefaRecorrente,
-  FabricaTarefas, 
-  FabricaTarefasPontuais, 
-  FabricaTarefasTemporais, 
-  GerenciadorFabricaTarefas 
+// === OBSERVER PATTERN FOR PRIORITY CHANGES ===
+class ObservadorTarefa {
+  atualizar(tarefa, acao) {
+    throw new Error('Método atualizar() deve ser implementado');
+  }
+}
+
+class LoggerObserver extends ObservadorTarefa {
+  atualizar(tarefa, acao) {
+    console.log(`[SERVER LOG] ${acao} — ${tarefa.titulo} | Nova prioridade: ${tarefa.prioridade}`);
+  }
+}
+
+class NotifierObserver extends ObservadorTarefa {
+  constructor(emitter) {
+    super();
+    this.emitter = emitter;
+  }
+
+  atualizar(tarefa, acao) {
+    this.emitter.emit('tarefaAtualizada', {
+      id: tarefa.id,
+      titulo: tarefa.titulo,
+      prioridade: tarefa.prioridade,
+      mensagem: `Prioridade alterada para ${tarefa.prioridade}`,
+      timestamp: new Date()
+    });
+  }
+}
+
+class SujeitoTarefa {
+  constructor() {
+    this.observadores = [];
+  }
+
+  adicionarObservador(obs) {
+    this.observadores.push(obs);
+  }
+
+  notificar(tarefa, acao) {
+    for (const obs of this.observadores) {
+      obs.atualizar(tarefa, acao);
+    }
+  }
+}
+
+// === Global instance (shared between model and server setup) ===
+const gerenteObservadores = new SujeitoTarefa();
+
+tarefaSchema.methods.alterarPrioridade = function (novaPrioridade) {
+  const antiga = this.prioridade;
+  this.prioridade = novaPrioridade;
+  this.atualizadoEm = new Date();
+
+  gerenteObservadores.notificar(this, `Mudança de prioridade de ${antiga} → ${novaPrioridade}`);
+  return `Prioridade alterada de ${antiga} para ${novaPrioridade}`;
 };
+
+export {
+  Tarefa,
+  TarefaSimples,
+  TarefaComPrazo,
+  TarefaRecorrente,
+  FabricaTarefas,
+  FabricaTarefasPontuais,
+  FabricaTarefasTemporais,
+  GerenciadorFabricaTarefas,
+  gerenteObservadores,
+  LoggerObserver,
+  NotifierObserver
+};
+
