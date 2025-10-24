@@ -110,7 +110,7 @@ No front-end, a interação com o Proxy do back-end é crucial para o fluxo de a
 *Gerenciamento de Estado de Autenticação (App.js):*
 O componente principal gerencia o estado do token de autenticação, decidindo se o usuário vê a página de autenticação (AuthPage) ou o painel de controle (Dashboard).
 
-```
+```javascript
 // src/App.js
 import { useState } from 'react';
 import Dashboard from './components/Dashboard';
@@ -148,7 +148,7 @@ export default App;
 
 O Dashboard é um exemplo de componente que só é renderizado se o token estiver presente, e suas requisições internas (se houver) seriam protegidas pelo authProxy no back-end.
 
-```
+```javascript
 // src/components/Dashboard.js
 function Dashboard({ onLogout }) {
   // ... (lógica para buscar dados protegidos, que usaria o token)
