@@ -77,10 +77,11 @@ Object.freeze(SingletonConnection);
 export default SingletonConnection;
 ```
 
-**Front-end**
-No desenvolvimento front-end com React, a implementação de um Singleton para o cliente de API é uma prática de arquitetura que garante a consistência e a centralização das configurações de comunicação com o back-end. Ao invés de configurar a URL base e os headers em cada componente que precisa fazer uma requisição, o componente simplesmente importa a instância única (api) e a utiliza. Isso simplifica a manutenção e facilita a adição de interceptores globais (para tratamento de erros, por exemplo).
+**Front-end (React - exemplo de uso LoginForm.js)**
 
-```
+O LoginForm utiliza a instância Singleton do cliente de API (ou o axios importado diretamente, que em um ambiente de módulo moderno, age como um Singleton) para realizar a chamada de login.
+
+```javascript
 // src/components/LoginForm.jsx
 import { useState } from 'react';
 import axios from 'axios';
