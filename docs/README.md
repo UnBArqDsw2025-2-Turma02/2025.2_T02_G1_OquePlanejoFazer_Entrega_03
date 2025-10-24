@@ -1,4 +1,4 @@
-# O Que O Planejo Fazer
+# O Que Planejo Fazer
 
 **Código da Disciplina**: FGA0208<br>
 **Número do Grupo**: 01<br>
