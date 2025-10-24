@@ -75,18 +75,51 @@
 </center>
 
 ## Sobre 
-Contextualize, usando referências, links, e outros materiais como fontes.
+projeto "O que planejo fazer" tem como objetivo oferecer uma plataforma digital voltada à organização pessoal, permitindo que os usuários criem, classifiquem e gerenciem tarefas e listas de forma prática e eficiente. A aplicação busca unir simplicidade, produtividade e uma base técnica sólida, garantindo uma experiência fluida e confiável.
+
+Nesta etapa do desenvolvimento, foram exploradas e aplicadas as três categorias de padrões de projeto GoF (Gang of Four): **Criacionais**, **Estruturais** e **Comportamentais**.  
+O objetivo é aprimorar a arquitetura do sistema, trazendo modularidade, escalabilidade e facilidade de manutenção, além de reforçar boas práticas arquiteturais.
 
 ## Screenshots da Segunda Entrega
-Adicione 2 ou mais screenshots em termos de artefatos realizados na entrega.
+
+![screenshot](assets/exemplo1.PNG)
+
+![screenshot](assets/exemplo2.PNG)
+
+![screenshot](assets/exemplo3.PNG)
+
 
 ## Há algo a ser executado?
 
-( ) SIM
+(X) SIM
 
 ( ) NÃO
 
-Se SIM, insira um manual (ou um script) para auxiliar ainda mais os interessados na execução.
+Antes de começar, confira se você já tem instalado no seu computador:
+
+- [Node.js](https://nodejs.org/) (versão mínima recomendada: 20.19 ou 22.12)
+- [npm](https://www.npmjs.com/get-npm) ou [yarn](https://yarnpkg.com/)
+- [Git](https://git-scm.com/) (opcional, caso vá clonar o repositório)
+
+### Instalação do Backend (Node.js)
+
+```shell
+cd backend
+npm install
+cp .env.example .env
+npm start
+```
+
+### Instalação do Frontend (React)
+
+Abra um novo terminal
+
+```shell
+cd frontend
+npm install
+npm run dev
+```
+
 
 ## Informações Complementares 
 Quaisquer outras informações adicionais podem ser descritas nessa seção.
@@ -94,4 +127,4 @@ Quaisquer outras informações adicionais podem ser descritas nessa seção.
 ## Histórico de Versões
 | Versão | Alteração | Responsável | Data | Revisor |  Detalhes da Revisão | Data da Revisão |
 |--------|-----------|-------------|------|---------|----------------------|-----------------|
-| X.X | --- | [SEU NOME](https://github.com/SEUGITHUB) | XX/XX/XX | [SEU NOME](https://github.com/SEUGITHUB) | ---  | XX/XX/XX |
+| 1.0 | Criação da página | [Brenno Oliveira](https://github.com/Brenno-Silva01) | 23/10/2025 | ---- | ---  | XX/XX/XX |
